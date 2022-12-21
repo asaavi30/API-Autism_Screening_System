@@ -6,11 +6,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from flask_cors import CORS
+import pymongo
 import warnings
 warnings.filterwarnings(action='ignore', category=UserWarning)
 
 app = Flask(__name__)
 CORS(app)
+
+# Connect to MongoDB
+client = pymongo.MongoClient("mongodb+srv://root:root@asddatasystem.wjqngms.mongodb.net/test")
+mydb = client["ASDMainCollection"]
+mycol = mydb["main"]
 
 @app.route('/')
 def hello_world():
@@ -19,6 +25,27 @@ def hello_world():
 @app.route('/api/algo/<int:algo>/data/<string:arr>')
 def predictFunction(arr, algo):
     arr = [int(i) for i in arr.split(',')]
+    try:
+        mycol = {
+            "A1_Score": arr[0],
+            "A2_Score": arr[1],
+            "A3_Score": arr[2],
+            "A4_Score": arr[3],
+            "A5_Score": arr[4],
+            "A6_Score": arr[5],
+            "A7_Score": arr[6],
+            "A8_Score": arr[7],
+            "A9_Score": arr[8],
+            "A10_Score": arr[9],
+            "age": arr[10],
+            "sex": arr[11],
+            "ethnicity": arr[12],
+            "child_jaundice": arr[13],
+            "family_jaundice": arr[14],
+        }
+        x = mycol.insert_one(mycol)
+    except:
+        pass
     le = LabelEncoder()
     df = pd.read_csv("dataset.csv")
     df.drop(['Case_No', 'Who_completed_the_test', 'Qchat-10-Score'], axis=1, inplace=True)
