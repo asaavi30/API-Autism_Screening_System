@@ -26,7 +26,7 @@ def hello_world():
 def predictFunction(arr, algo):
     arr = [int(i) for i in arr.split(',')]
     try:
-        mycol = {
+        mydict = {
             "A1_Score": arr[0],
             "A2_Score": arr[1],
             "A3_Score": arr[2],
@@ -43,7 +43,7 @@ def predictFunction(arr, algo):
             "child_jaundice": arr[13],
             "family_jaundice": arr[14],
         }
-        x = mycol.insert_one(mycol)
+        x = mycol.insert_one(mydict)
     except:
         pass
     le = LabelEncoder()
