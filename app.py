@@ -70,21 +70,21 @@ def predictFunction(arr, algo):
     if algo == 1:
         a = log_reg.predict([arr])
         if a == 1:
-            return jsonify({'prediction': '1', 'message': 'The child has autism'})
+            return jsonify({'prediction': '1', 'message': 'The child may have autism'})
         else:
-            return jsonify({'prediction': '0', 'message': 'The child does not have autism'})
+            return jsonify({'prediction': '0', 'message': 'The child may not have autism'})
     elif algo == 2:
         a = clf.predict([arr])
         if a == 1:
-            return jsonify({'prediction': '1', 'message': 'The child has autism'})
+            return jsonify({'prediction': '1', 'message': 'The child may have autism'})
         else:
-            return jsonify({'prediction': '0', 'message': 'The child does not have autism'})
+            return jsonify({'prediction': '0', 'message': 'The child may not have autism'})
     elif algo == 3:
         a = knn.predict([arr])
         if a == 1:
-            return jsonify({'prediction': '1', 'message': 'The child has autism'})
+            return jsonify({'prediction': '1', 'message': 'The child may have autism'})
         else:
-            return jsonify({'prediction': '0', 'message': 'The child does not have autism'})
+            return jsonify({'prediction': '0', 'message': 'The child may not have autism'})
 
 if __name__ == '__main__':
     app.run()
