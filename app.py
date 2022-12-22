@@ -18,6 +18,28 @@ client = pymongo.MongoClient("mongodb+srv://root:root@asddatasystem.wjqngms.mong
 mydb = client["ASDMainCollection"]
 mycol = mydb["main"]
 
+le = LabelEncoder()
+df = pd.read_csv("dataset.csv")
+df.drop(['Case_No', 'Who_completed_the_test', 'Qchat-10-Score'], axis=1, inplace=True)
+data = pd.DataFrame(df, columns=['Ethnicity', 'Family_mem_with_ASD', 'ClassASD_Traits', 'Sex', 'Jaundice'])
+data['Family_mem_with_ASD_encoded'] = le.fit_transform(data['Family_mem_with_ASD'])
+data['Ethnicity_encoded'] = le.fit_transform(data['Ethnicity'])
+data['ClassASD_Traits_encoded'] = le.fit_transform(data['ClassASD_Traits'])
+data['Sex_encoded'] = le.fit_transform(data['Sex'])
+data['Jaundice_encoded'] = le.fit_transform(data['Jaundice'])
+columns = ['Ethnicity', 'Family_mem_with_ASD', 'ClassASD_Traits', 'Sex', 'Jaundice']
+for col in columns:
+    df[col] = le.fit_transform(df[col])
+x = df.drop('ClassASD_Traits', axis='columns')
+y = df['ClassASD_Traits']
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=7, stratify=y)
+clf = DecisionTreeClassifier(criterion="entropy", max_depth=3)
+clf = clf.fit(x_train, y_train)
+log_reg = LogisticRegression()
+log_reg.fit(x_train, y_train)
+knn = KNeighborsClassifier(n_neighbors=13, p=2, metric='euclidean')
+knn.fit(x_train, y_train)
+
 @app.route('/')
 def hello_world():
     return jsonify({'message': 'Hello, World!'})
@@ -46,27 +68,6 @@ def predictFunction(arr, algo):
         x = mycol.insert_one(mydict)
     except:
         pass
-    le = LabelEncoder()
-    df = pd.read_csv("dataset.csv")
-    df.drop(['Case_No', 'Who_completed_the_test', 'Qchat-10-Score'], axis=1, inplace=True)
-    data = pd.DataFrame(df, columns=['Ethnicity', 'Family_mem_with_ASD', 'ClassASD_Traits', 'Sex', 'Jaundice'])
-    data['Family_mem_with_ASD_encoded'] = le.fit_transform(data['Family_mem_with_ASD'])
-    data['Ethnicity_encoded'] = le.fit_transform(data['Ethnicity'])
-    data['ClassASD_Traits_encoded'] = le.fit_transform(data['ClassASD_Traits'])
-    data['Sex_encoded'] = le.fit_transform(data['Sex'])
-    data['Jaundice_encoded'] = le.fit_transform(data['Jaundice'])
-    columns = ['Ethnicity', 'Family_mem_with_ASD', 'ClassASD_Traits', 'Sex', 'Jaundice']
-    for col in columns:
-        df[col] = le.fit_transform(df[col])
-    x = df.drop('ClassASD_Traits', axis='columns')
-    y = df['ClassASD_Traits']
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=7, stratify=y)
-    clf = DecisionTreeClassifier(criterion="entropy", max_depth=3)
-    clf = clf.fit(x_train, y_train)
-    log_reg = LogisticRegression()
-    log_reg.fit(x_train, y_train)
-    knn = KNeighborsClassifier(n_neighbors=13, p=2, metric='euclidean')
-    knn.fit(x_train, y_train)
     if algo == 1:
         a = log_reg.predict([arr])
         if a == 1:
